@@ -45,111 +45,50 @@ namespace WEB_API.Controllers
             return new ObjectResult(games);
         }
 
-        // GET: Games/Create
-        /*public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Games/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST api/users
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Price")] Games games)
+        public async Task<ActionResult<Games>> Post(Games games)
         {
-            if (ModelState.IsValid)
+            if (games == null)
             {
-                _context.Add(games);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return BadRequest();
             }
-            return View(games);
+
+            db.Games.Add(games);
+            await db.SaveChangesAsync();
+            return Ok(games);
         }
 
-        // GET: Games/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // PUT api/users/
+        [HttpPut]
+        public async Task<ActionResult<Games>> Put(Games games)
         {
-            if (id == null)
+            if (games == null)
+            {
+                return BadRequest();
+            }
+            if (!db.Games.Any(x => x.Id == games.Id))
             {
                 return NotFound();
             }
 
-            var games = await _context.Games.FindAsync(id);
+            db.Update(games);
+            await db.SaveChangesAsync();
+            return Ok(games);
+        }
+
+        // DELETE api/users/5
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Games>> Delete(int id)
+        {
+            Games games = db.Games.FirstOrDefault(x => x.Id == id);
             if (games == null)
             {
                 return NotFound();
             }
-            return View(games);
+            db.Games.Remove(games);
+            await db.SaveChangesAsync();
+            return Ok(games);
         }
-
-        // POST: Games/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Price")] Games games)
-        {
-            if (id != games.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(games);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!GamesExists(games.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(games);
-        }
-
-        // GET: Games/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var games = await _context.Games
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (games == null)
-            {
-                return NotFound();
-            }
-
-            return View(games);
-        }
-
-        // POST: Games/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var games = await _context.Games.FindAsync(id);
-            _context.Games.Remove(games);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool GamesExists(int id)
-        {
-            return _context.Games.Any(e => e.Id == id);
-        }*/
     }
 }
